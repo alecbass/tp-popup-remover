@@ -39,21 +39,32 @@ const removePopup = () => {
 
 /** Resumes the primary video after the initial pause */
 const resumeVideoOnce = () => {
-  if (hasResumedVideo) {
+  if (hasRemoved && hasResumedVideo) {
+    // The video gets paused AFTER the popup appears
     return;
   }
 
   const video = getPrimaryVideo();
-  if (video?.paused) {
+  if (video?.paused && video.currentTime > 0.0) {
     video.play();
     hasResumedVideo = true;
   }
 };
 
+// Keep track of if the URL changes so we can resume the new video
+let oldHref = window.location.href;
+
 const observer = new MutationObserver(() => {
   // Potentially remove the popup blocker and resume the video after the page loads
   removePopup();
   resumeVideoOnce();
+
+  if (window.location.href !== oldHref) {
+    // Video has changed, reset the state
+    hasRemoved = false;
+    hasResumedVideo = false;
+    oldHref = window.location.href;
+  }
 });
 
 if (window.location.hostname === "www.youtube.com") {
