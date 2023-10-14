@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "Youtube Popup Remover",
+  "version": "1.0",
+  "description": "Removes the annoying Youtube popup if you have adblocked enabled",
+  "content_scripts": [
+    {
+      "js": ["script.js"],
+      "matches": ["https://developer.chrome.com/docs/extensions/*", "https://youtube.com/*", "https://www.youtube.com/*"]
+    }
+  ]
+}
