@@ -60,8 +60,9 @@ const observer = new MutationObserver(() => {
   resumeVideoOnce();
 
   if (window.location.href !== oldHref) {
-    // Video has changed, reset the state
-    hasRemoved = false;
+    // Video has changed
+    // The popup only appears once per Youtube session, so even if you navigate between multiple videos, it won't
+    // appear again. We only need to reset the video state
     hasResumedVideo = false;
     oldHref = window.location.href;
   }
