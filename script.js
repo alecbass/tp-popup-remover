@@ -9,7 +9,7 @@ let hasResumedVideo = false;
 
 /**
     Retrieves the primary Youtube video
-    @returns {HTMLVideoElement | null} The video
+    @returns {HTMLVideoElement | null} The video, if it exists
 */
 const getPrimaryVideo = () => document.querySelector("video.html5-main-video");
 
