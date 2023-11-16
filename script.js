@@ -1,3 +1,16 @@
+/** Removes the shorts reel and advertisement containers on a Youtube page */
+const removeShortsAndAds = () => {
+  const shortsPanels = [
+    ...document.querySelectorAll("ytd-rich-shelf-renderer"),
+    ...document.querySelectorAll("ytd-reel-shelf-renderer"),
+    ...document.querySelectorAll("ytd-ad-slot-renderer"),
+  ];
+
+  for (const shortsPanel of shortsPanels) {
+    shortsPanel.remove();
+  }
+};
+
 /** DOM elements which prevent you from clicking on a Youtube video */
 const IDENTIFIERS = ["tp-yt-iron-overlay-backdrop", "ytd-popup-container"];
 
@@ -15,10 +28,11 @@ const getPrimaryVideo = () => document.querySelector("video.html5-main-video");
 
 /**
     Removes the popup from the DOM and resumes the video (the popup trigger pauses it).
+    @returns {boolean} True if the popup was removed, false otherwise
 */
 const removePopup = () => {
   if (hasRemoved) {
-    return;
+    return false;
   }
 
   /** Has the popup been removed within this check? */
@@ -35,6 +49,8 @@ const removePopup = () => {
 
   // Mark the popup as having been removed, so we don't try again
   hasRemoved = didRemoveThisTime;
+
+  return didRemoveThisTime;
 };
 
 /** Resumes the primary video after the initial pause */
@@ -56,8 +72,16 @@ let oldHref = window.location.href;
 
 const observer = new MutationObserver(() => {
   // Potentially remove the popup blocker and resume the video after the page loads
-  removePopup();
-  resumeVideoOnce();
+  const didRemove = removePopup();
+
+  if (didRemove) {
+    resumeVideoOnce();
+  }
+
+  if (!window.location.href.includes("watch?v=")) {
+    // Remove the shorts panel
+    removeShortsAndAds();
+  }
 
   if (window.location.href !== oldHref) {
     // Video has changed
